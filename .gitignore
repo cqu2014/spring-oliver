@@ -1,0 +1,41 @@
+*.class
+.classpath
+.project
+*.iml
+.settings/
+.metadata/
+Servers/
+.idea/
+.idea/httpRequests/*.json
+.idea/httpRequests/http-requests-log.http
+.gradle/
+
+log/
+target/
+# gradle/
+/**/build/
+/**/out/
+/**/ControllerTool.java
+# Ignore OS generated files #
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+.~lock.*
+
+# Package Files #
+# *.jar
+*.war
+*.ear
+*.log
+# *.txt
+*.bat
+*.csv
+# other
+mybatis-gen.xml
+#logback.xml
+rebel.xml
