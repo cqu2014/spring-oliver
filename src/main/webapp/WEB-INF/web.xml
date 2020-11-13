@@ -6,16 +6,16 @@
          version="2.5">
     <display-name>spring oliver</display-name>
     <servlet>
-        <servlet-name>oliverMVC</servlet-name>
+        <servlet-name>spring-oliver</servlet-name>
         <servlet-class>spring.framework.v1.GPDispatcherServlet</servlet-class>
         <init-param>
             <param-name>contextConfigLocation</param-name>
-            <param-value>classpath:</param-value>
+            <param-value>classpath:application.properties</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
-        <servlet-name>oliverMVC</servlet-name>
-        <url-pattern>/**</url-pattern>
+        <servlet-name>spring-oliver</servlet-name>
+        <url-pattern>/*</url-pattern>
     </servlet-mapping>
 </web-app>
