@@ -2,6 +2,8 @@ plugins {
     id 'java'
 }
 
+apply from: 'https://raw.github.com/akhikhl/gretty/master/pluginScripts/gretty.plugin'
+
 group 'com.oliver'
 version '1.0-SNAPSHOT'
 

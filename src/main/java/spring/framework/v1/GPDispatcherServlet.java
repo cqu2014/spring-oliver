@@ -1,9 +1,7 @@
 package spring.framework.v1;
 
 import cn.hutool.core.lang.Console;
-import spring.framework.v1.annotation.GPController;
-import spring.framework.v1.annotation.GPRequestParam;
-import spring.framework.v1.annotation.GPService;
+import spring.framework.v1.annotation.*;
 import spring.framework.v1.util.StringTool;
 
 import javax.servlet.ServletConfig;
@@ -153,17 +151,59 @@ public class GPDispatcherServlet extends HttpServlet {
         Console.log("GP Spring framework is init");
     }
 
+    /**
+     * 初始化 mvc框架的 HandlerMapping
+     */
     private void initHandlerMapping() {
+        if (ioc.isEmpty()) return;
+        for (Map.Entry<String, Object> entry : ioc.entrySet()) {
+            Class<?> aClass = entry.getValue().getClass();
+            if (!aClass.isAnnotationPresent(GPController.class)){
+                continue;
+            }
+            String baseUrl = "";
+            //  获取controller类上配置的路径信息--拼接
+            if (aClass.isAnnotationPresent(GPRequestMapping.class)){
+                baseUrl = aClass.getAnnotation(GPRequestMapping.class).value();
+            }
 
+            Method[] methods = aClass.getMethods();
+            for (Method method : methods) {
+                if (!method.isAnnotationPresent(GPRequestMapping.class)){
+                    continue;
+                }
+                GPRequestMapping methodAnnotation = method.getAnnotation(GPRequestMapping.class);
+                String url = ("/" + baseUrl + "/" + methodAnnotation.value()).replaceAll("/+", "/");
+                handlerMapping.put(url,method);
+                Console.log("Mapped {}==> {}",url,method);
+            }
+        }
     }
 
+    /**
+     * 完成自动注入功能
+     */
     private void doAutoWire() {
         if (ioc.isEmpty()){
             return;
         }
         for (Map.Entry<String, Object> entry : ioc.entrySet()) {
+            // 获取实例对象的所有属性
             Field[] fields = entry.getValue().getClass().getDeclaredFields();
-
+            for (Field field : fields) {
+                if (!field.isAnnotationPresent(GPAutowired.class)){
+                    continue;
+                }
+                GPAutowired gpAutowired = field.getAnnotation(GPAutowired.class);
+                //  获取需要注入的属性的 beanName
+                String beanName = "".equals(gpAutowired.value()) ? field.getType().getName() : gpAutowired.value();
+                field.setAccessible(true);
+                try {
+                    field.set(entry.getValue(),ioc.get(beanName));
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
