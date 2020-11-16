@@ -19,13 +19,13 @@ import java.io.IOException;
  * @since
  */
 @GPController
-@GPRequestMapping("/")
+@GPRequestMapping("/ben")
 public class BenController {
     @GPAutowired
     private IBenService benService;
 
     @GPRequestMapping("/query")
-    private void query(HttpServletRequest request, HttpServletResponse response,
+    public void query(HttpServletRequest request, HttpServletResponse response,
                        @GPRequestParam String name){
         String result = benService.get(name);
 
@@ -36,6 +36,7 @@ public class BenController {
         }
     }
 
+    @GPRequestMapping("/add")
     public void add(HttpServletRequest request,HttpServletResponse response,
                     @GPRequestParam("a") Integer a,@GPRequestParam("b") Integer b){
         try {

@@ -127,11 +127,15 @@ public class GPDispatcherServlet extends HttpServlet {
 
         // 通过反射获取method的class，then 获取class的name
         String beanName = StringTool.toLowerFirstCase(method.getDeclaringClass().getSimpleName());
-        if (params == null || params.get("name") == null
-                || params.get("name")[0] == null){
-            method.invoke(ioc.get(beanName),req,resp,params.get("name")[0]);
-        }else {
-            method.invoke(ioc.get(beanName),req,resp);
+        try {
+            if (params == null || params.get("name") == null
+                    || params.get("name")[0] == null){
+                method.invoke(ioc.get(beanName),req,resp);
+            }else {
+                method.invoke(ioc.get(beanName),req,resp,params.get("name")[0]);
+            }
+        }catch (Exception exception){
+            exception.printStackTrace();
         }
     }
 
@@ -160,6 +164,8 @@ public class GPDispatcherServlet extends HttpServlet {
      */
     private void initHandlerMapping() {
         if (ioc.isEmpty()) return;
+        Console.log("initHandlerMapping ioc={}",JSONUtil.toJsonStr(ioc));
+
         for (Map.Entry<String, Object> entry : ioc.entrySet()) {
             Class<?> aClass = entry.getValue().getClass();
             if (!aClass.isAnnotationPresent(GPController.class)){
@@ -222,7 +228,7 @@ public class GPDispatcherServlet extends HttpServlet {
                     Object instance = aClass.newInstance();
                     String beanName = StringTool.toLowerFirstCase(aClass.getSimpleName());
                     ioc.put(beanName,instance);
-                    Console.log("Instance {} success!,instance={}",beanName,JSONUtil.toJsonStr(instance));
+                    Console.log("Instance {} success!,instance={}",beanName,instance.getClass().getSimpleName());
                 }else if (aClass.isAnnotationPresent(GPService.class)){
                     String beanName = StringTool.toLowerFirstCase(aClass.getSimpleName());
 
@@ -232,7 +238,7 @@ public class GPDispatcherServlet extends HttpServlet {
                     }
                     Object instance = aClass.newInstance();
                     ioc.put(beanName, instance);
-                    Console.log("Instance {} success!,instance={}",beanName,JSONUtil.toJsonStr(instance));
+                    Console.log("Instance {} success!,instance={}",beanName,instance.getClass().getSimpleName());
                     // 为了后期根据类型注入实现类的一种笨方法
                     for (Class<?> anInterface : aClass.getInterfaces()) {
                         if (ioc.containsKey(anInterface.getName())) {
@@ -241,7 +247,7 @@ public class GPDispatcherServlet extends HttpServlet {
                         ioc.put(anInterface.getName(), instance);
                     }
                 }
-             }
+            }
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
             Console.error("doInstance error:{}",e.getLocalizedMessage());
         } catch (Exception exception) {
