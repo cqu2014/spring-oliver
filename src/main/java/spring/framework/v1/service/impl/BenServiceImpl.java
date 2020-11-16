@@ -10,7 +10,7 @@ import spring.framework.v1.service.IBenService;
  * @date Create at 2020/11/11
  * @since
  */
-@GPService("benServiceImpl")
+@GPService
 public class BenServiceImpl implements IBenService {
     @Override
     public String get(String name) {

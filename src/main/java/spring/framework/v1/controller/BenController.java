@@ -19,7 +19,7 @@ import java.io.IOException;
  * @since
  */
 @GPController
-@GPRequestMapping("/ben")
+@GPRequestMapping("/")
 public class BenController {
     @GPAutowired
     private IBenService benService;

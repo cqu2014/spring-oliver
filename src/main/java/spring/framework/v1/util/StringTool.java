@@ -1,8 +1,8 @@
 package spring.framework.v1.util;
 
 import org.apache.commons.lang3.StringUtils;
+import spring.framework.v1.service.impl.BenServiceImpl;
 
-import java.lang.reflect.Field;
 import java.util.Arrays;
 
 /**
@@ -36,6 +36,19 @@ public final class StringTool {
         result[0] = 9;
         System.out.println(Arrays.toString(result));
         System.out.println("*****************************************************");
+        Class<?> aClass = null;
+        try {
+            aClass = Class.forName("spring.framework.v1.service.impl.BenServiceImpl");
+            BenServiceImpl instance = (BenServiceImpl) aClass.newInstance();
+            System.out.println(instance.get("tom"));
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        }
+
     }
 
 }

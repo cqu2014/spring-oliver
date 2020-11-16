@@ -1,6 +1,8 @@
 package spring.framework.v1;
 
 import cn.hutool.core.lang.Console;
+import cn.hutool.extra.ssh.JschUtil;
+import cn.hutool.json.JSONUtil;
 import spring.framework.v1.annotation.*;
 import spring.framework.v1.util.StringTool;
 
@@ -63,6 +65,7 @@ public class GPDispatcherServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        Console.log("doPost with req = {}", JSONUtil.toJsonStr(req.getParameterMap()));
         try {
             doDispatch(req,resp);
         } catch (Exception exception) {
@@ -82,7 +85,8 @@ public class GPDispatcherServlet extends HttpServlet {
         url = url.replaceAll(contextPath,"").replaceAll("/+","/");
         // 未找到请求url对应的方法则返回 404状态码
         if (!handlerMapping.containsKey(url)){
-            resp.getWriter().write("404 Not Found!!");
+            resp.getWriter().write("404 Not Found!! Written by oliver wang");
+            resp.getWriter().write(JSONUtil.toJsonStr(handlerMapping));
             return;
         }
         // 获取handlerMapping中对应的方法
@@ -211,13 +215,14 @@ public class GPDispatcherServlet extends HttpServlet {
         if (classNames.isEmpty()){
             return;
         }
-        for (String className : classNames) {
-            try {
+        try {
+            for (String className : classNames) {
                 Class<?> aClass = Class.forName(className);
                 if (aClass.isAnnotationPresent(GPController.class)){
                     Object instance = aClass.newInstance();
                     String beanName = StringTool.toLowerFirstCase(aClass.getSimpleName());
                     ioc.put(beanName,instance);
+                    Console.log("Instance {} success!,instance={}",beanName,JSONUtil.toJsonStr(instance));
                 }else if (aClass.isAnnotationPresent(GPService.class)){
                     String beanName = StringTool.toLowerFirstCase(aClass.getSimpleName());
 
@@ -227,18 +232,22 @@ public class GPDispatcherServlet extends HttpServlet {
                     }
                     Object instance = aClass.newInstance();
                     ioc.put(beanName, instance);
-
+                    Console.log("Instance {} success!,instance={}",beanName,JSONUtil.toJsonStr(instance));
                     // 为了后期根据类型注入实现类的一种笨方法
                     for (Class<?> anInterface : aClass.getInterfaces()) {
-                        if (!ioc.containsKey(anInterface.getName())){
-                            ioc.put(anInterface.getName(),instance);
+                        if (ioc.containsKey(anInterface.getName())) {
+                            throw new Exception("The beanName is exists!!");
                         }
+                        ioc.put(anInterface.getName(), instance);
                     }
                 }
-            } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
-                e.printStackTrace();
-            }
+             }
+        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+            Console.error("doInstance error:{}",e.getLocalizedMessage());
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
+        Console.log("Ioc = {}",JSONUtil.toJsonStr(ioc));
     }
 
     /**
@@ -262,11 +271,11 @@ public class GPDispatcherServlet extends HttpServlet {
                 if(!file.getName().endsWith(".class")){
                     continue;
                 }
-                String className = scanPackage + "." + file.getName()
-                            .substring(0,file.getName().lastIndexOf("."));
+                String className = scanPackage + "." + file.getName().replace(".class", "");
                 classNames.add(className);
             }
         }
+        Console.log("Scanner package {} over,classNames={}",scanPackage,JSONUtil.toJsonStr(classNames));
     }
 
     /**
@@ -277,6 +286,7 @@ public class GPDispatcherServlet extends HttpServlet {
         try (InputStream inputStream = this.getClass().getClassLoader()
                 .getResourceAsStream(initParameter)){
             contextConfig.load(inputStream);
+            Console.log("contextConfig = {}",JSONUtil.toJsonStr(contextConfig));
         } catch (IOException e) {
             e.printStackTrace();
         }
