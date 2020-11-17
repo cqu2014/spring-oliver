@@ -1,6 +1,5 @@
 package spring.framework.controller;
 
-import cn.hutool.core.lang.Console;
 import spring.framework.annotation.GPAutowired;
 import spring.framework.annotation.GPController;
 import spring.framework.annotation.GPRequestMapping;
@@ -9,8 +8,6 @@ import spring.framework.service.IBenService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 /**
  * @author Oliver Wang

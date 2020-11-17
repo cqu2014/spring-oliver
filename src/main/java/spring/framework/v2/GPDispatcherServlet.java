@@ -19,7 +19,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -43,10 +42,10 @@ public class GPDispatcherServlet extends HttpServlet {
      */
     private static final String SCAN_PACKAGE = "scanPackage";
 
-    private Properties contextConfig = new Properties();
-    private List<String> classNames =new ArrayList<>();
-    private Map<String, Object> ioc = new HashMap<>(16);
-    private List<Handler> handlerMapping = new ArrayList<>();
+    private final Properties contextConfig = new Properties();
+    private final List<String> classNames =new ArrayList<>();
+    private final Map<String, Object> ioc = new HashMap<>(16);
+    private final List<Handler> handlerMapping = new ArrayList<>();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -74,8 +73,7 @@ public class GPDispatcherServlet extends HttpServlet {
         }
         // 获取方法的参数列表 考虑保存于handler中
         Class<?>[] parameterTypes = handler.getMethod().getParameterTypes();
-
-        // 需要赋值的参数值
+        // 需要赋值的参数值 controller中方法的参数要被注解注释关联除了req和resp
         Object[] paramValues = new Object[parameterTypes.length];
         Map<String, String[]> params = req.getParameterMap();
         for (Map.Entry<String, String[]> stringEntry : params.entrySet()) {
@@ -84,6 +82,7 @@ public class GPDispatcherServlet extends HttpServlet {
                 continue;
             }
             Integer index = handler.getParamIndexMapping().get(stringEntry.getKey());
+            // 类型转化
             paramValues[index] = convert(parameterTypes[index],value);
         }
         //设置方法中的request和response对象
