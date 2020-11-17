@@ -1,7 +1,7 @@
-package spring.framework.v1.util;
+package spring.framework.util;
 
 import org.apache.commons.lang3.StringUtils;
-import spring.framework.v1.service.impl.BenServiceImpl;
+import spring.framework.service.impl.BenServiceImpl;
 
 import java.util.Arrays;
 
@@ -38,7 +38,7 @@ public final class StringTool {
         System.out.println("*****************************************************");
         Class<?> aClass = null;
         try {
-            aClass = Class.forName("spring.framework.v1.service.impl.BenServiceImpl");
+            aClass = Class.forName("spring.framework.service.impl.BenServiceImpl");
             BenServiceImpl instance = (BenServiceImpl) aClass.newInstance();
             System.out.println(instance.get("tom"));
         } catch (ClassNotFoundException e) {

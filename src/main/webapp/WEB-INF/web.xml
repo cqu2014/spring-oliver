@@ -7,7 +7,7 @@
     <display-name>spring oliver</display-name>
     <servlet>
         <servlet-name>spring-oliver</servlet-name>
-        <servlet-class>spring.framework.v1.GPDispatcherServlet</servlet-class>
+        <servlet-class>spring.framework.v2.GPDispatcherServlet</servlet-class>
         <init-param>
             <param-name>contextConfigLocation</param-name>
             <param-value>application.properties</param-value>

@@ -1,4 +1,4 @@
-package spring.framework.v1.service;
+package spring.framework.service;
 
 /**
  * @Author Oliver Wang

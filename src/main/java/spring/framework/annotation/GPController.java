@@ -1,10 +1,10 @@
-package spring.framework.v1.annotation;
+package spring.framework.annotation;
 
 import java.lang.annotation.*;
 
-@Target(ElementType.FIELD)
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface GPAutowired {
+public @interface GPController {
     String value() default "";
 }

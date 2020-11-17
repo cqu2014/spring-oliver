@@ -1,4 +1,4 @@
-package spring.framework.v1.annotation;
+package spring.framework.annotation;
 
 import java.lang.annotation.*;
 

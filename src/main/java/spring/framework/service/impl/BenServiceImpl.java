@@ -1,7 +1,7 @@
-package spring.framework.v1.service.impl;
+package spring.framework.service.impl;
 
-import spring.framework.v1.annotation.GPService;
-import spring.framework.v1.service.IBenService;
+import spring.framework.annotation.GPService;
+import spring.framework.service.IBenService;
 
 /**
  * @author Oliver Wang
