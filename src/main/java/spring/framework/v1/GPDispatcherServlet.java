@@ -80,7 +80,9 @@ public class GPDispatcherServlet extends HttpServlet {
      * @param resp
      */
     private void doDispatch(HttpServletRequest req, HttpServletResponse resp) throws IOException, InvocationTargetException, IllegalAccessException {
+        // /spring-oliver/ben/query
         String url = req.getRequestURI();
+        // /spring-oliver
         String contextPath = req.getContextPath();
         url = url.replaceAll(contextPath,"").replaceAll("/+","/");
         // 未找到请求url对应的方法则返回 404状态码

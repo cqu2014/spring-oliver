@@ -10,6 +10,8 @@ import spring.framework.v1.service.IBenService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author Oliver Wang
@@ -28,8 +30,9 @@ public class BenController {
     public void query(HttpServletRequest request, HttpServletResponse response,
                        @GPRequestParam String name){
         String result = benService.get(name);
-
         try {
+            response.setContentType("application/json; charset=UTF-8");
+            response.setCharacterEncoding(String.valueOf(StandardCharsets.UTF_8));
             response.getWriter().write(result);
         } catch (IOException e) {
             Console.error("query with {} error:{}",name,e.getLocalizedMessage());
