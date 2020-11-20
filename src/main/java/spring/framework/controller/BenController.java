@@ -1,5 +1,6 @@
 package spring.framework.controller;
 
+import cn.hutool.core.lang.Console;
 import spring.framework.annotation.GPAutowired;
 import spring.framework.annotation.GPController;
 import spring.framework.annotation.GPRequestMapping;
@@ -25,6 +26,8 @@ public class BenController {
     @GPRequestMapping("/query")
     public String query(HttpServletRequest request, HttpServletResponse response,
                        @GPRequestParam("name") String name){
+        Console.log("{}==>{}","request.getSession().getServletContext()",request.getSession().getServletContext());
+        Console.log("{}==>{}","request.getSession().getServletContext().getRealPath(。。)",request.getSession().getServletContext().getRealPath("/"));
         return benService.get(name);
     }
 

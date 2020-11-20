@@ -17,4 +17,12 @@ public interface IBenService {
      */
     String get(String name);
 
+    /**
+     * 添加名称
+     *
+     * @param name
+     * @return
+     */
+    String add(String name);
+
 }

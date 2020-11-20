@@ -249,13 +249,14 @@ public class GPDispatcherServlet extends HttpServlet {
 
     private void scanner(String scanPackage) {
         Console.log("scanner input {}",scanPackage);
-        String basePackage =  "/" + scanPackage.replaceAll("\\.","/");
+        // tomcat 启动此处不能以/开头，jetty启动是否以/开头均可
+        String basePackage = scanPackage.replaceAll("\\.","/");
         URL resource = this.getClass().getClassLoader()
                 .getResource(basePackage);
-        Console.log("scanner resource {}",resource.getFile());
-        if (StringUtils.isEmpty(resource.getFile())){
+        if (resource == null || StringUtils.isEmpty(resource.getFile())){
             return;
         }
+        Console.log("scanner resource {}",resource.getFile());
         File classPath = new File(resource.getFile());
         for (File file : Objects.requireNonNull(classPath.listFiles())) {
             if (file.isDirectory()){
@@ -272,10 +273,15 @@ public class GPDispatcherServlet extends HttpServlet {
         Console.log("classNames = {}",JSONUtil.toJsonStr(classNames));
     }
 
+    /**
+     * 加载 application.properties文件
+     * @param initParameter "application.properties"
+     */
     private void loadConfig(String initParameter) {
         InputStream inputStream = null;
         try {
             inputStream = this.getClass().getClassLoader().getResourceAsStream(initParameter);
+            // Properties 对象contextConfig
             contextConfig.load(inputStream);
         } catch (IOException e) {
             e.printStackTrace();
